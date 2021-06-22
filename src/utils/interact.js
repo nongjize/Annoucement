@@ -9,7 +9,8 @@ const contractABI = require('../contract-abi.json')
 const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
 
 export const connectWallet = async () => {
-    if (window.ethereum) { //check if Metamask is installed
+    if (window.ethereum) 
+    { //check if Metamask is installed
           try {
               const address = await window.ethereum.enable(); //connect Metamask
               const obj = {
@@ -22,17 +23,19 @@ export const connectWallet = async () => {
           } catch (error) {
               return {
                   connectedStatus: false,
-                  status: "🦊 Connect to Metamask using the button on the top right."
+                  status: "🦊 Connect to Metamask using the button on the top right.nnnnnnjnz           at sg"
               }
           }
           
-    } else {
-          return {
+    } 
+    else 
+    {
+        return {
               connectedStatus: false,
               status: "🦊 You must install Metamask into your browser: https://metamask.io/download.html"
-          }
-        } 
-  };
+          }    
+    } 
+};
 
 
 export const mintNFT = async(url, name, description) => {
@@ -72,7 +75,8 @@ export const mintNFT = async(url, name, description) => {
     };
   
     //sign transaction via Metamask
-    try {
+    try 
+    {
         const txHash = await window.ethereum
             .request({
                 method: 'eth_sendTransaction',
@@ -82,7 +86,9 @@ export const mintNFT = async(url, name, description) => {
             success: true,
             status: "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" + txHash
         }
-    } catch (error) {
+    } 
+    catch (error) 
+    {
         return {
             success: false,
             status: "😥 Something went wrong: " + error.message
