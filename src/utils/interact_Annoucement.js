@@ -1,8 +1,14 @@
-import {pinJSONToIPFS} from './pinata.js'
-require('dotenv').config();
-const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
-const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
-const web3 = createAlchemyWeb3(alchemyKey); 
+var Contract = require('web3-eth-contract');
+
+// set provider for all later instances to use
+Contract.setProvider('ws://localhost:8546');
+
+var contract = new Contract(jsonInterface, address);
+
+// contract.methods.somFunc().send({from: ....})
+// .on('receipt', function(){
+//     ...
+// });
 
 const contractABI = require('../contract-abi.json')
 //const contractAddress = "0x4C4a07F737Bf57F6632B6CAB089B78f62385aCaE";;//0x5FbDB2315678afecb367f032d93F642f64180aa3
