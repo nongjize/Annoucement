@@ -141,7 +141,7 @@ export const InspectNFT = async(IdOfNFT) => {
      {
          return {
              success: false,
-             status: "😥 Something went wrong: " + error.message
+             status: "Something went wrong: " + error.message
          }
      }
 
