@@ -52,7 +52,7 @@ const Minter = (props) => {
 
   const onNFT_search_Pressed = async () => {
     const { SearchResult_ } = await InspectNFT(NFT_ID_FOR_search);
-    setSearchResult(SearchResult_);
+    setSearchResult( SearchResult_ );
   };
 
   return (

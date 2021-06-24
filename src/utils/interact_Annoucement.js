@@ -16,13 +16,11 @@ export const InspectNFT = async(IdOfNFT) => {
             SearchResult_: "❗ID为空."
         }
     }
-    var result_="null";
 
-    contract.methods.ownerOf(IdOfNFT).call()
-    .then(async(result)=>{result_=result;});
+    const result_= await contract.methods.ownerOf(IdOfNFT).call();
 
-    return{
-        success: false,
-        SearchResult_:result_
-    }
+    return {
+        success: true,    
+        SearchResult_:  result_
+    };
 }
