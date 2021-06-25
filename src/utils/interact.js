@@ -100,47 +100,39 @@ export const mintNFT = async(url, name, description) => {
     }
 }
 
-export const InspectNFT = async(IdOfNFT) => {
-    
-    //error handling
+export const BuyNFT = async(IdOfNFT,salePriceInEth,SetPriceInEth) => {
     if (IdOfNFT.trim() === "" ) { 
         return {
             success: false,
             SearchResult_: "❗ID为空.",
         }
     }
-
-
-     //load smart contract
-     window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
-
-     //set up your Ethereum transaction
+    
+    window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
      const transactionParameters = {
          to: contractAddress, // Required except during contract publications.
          from: window.ethereum.selectedAddress, // must match user's active address.
-         'data': window.contract.methods.ownerOf(IdOfNFT).encodeABI() //make call to NFT smart contract 
+         value: salePriceInEth,
+         'data': window.contract.methods.BuyNFT(IdOfNFT,SetPriceInEth).encodeABI() //make call to NFT smart contract 
      };
    
      //sign transaction via Metamask
      try 
      {
-         const txHash = await window.ethereum
-             .request({
-                 method: 'eth_sendTransaction',
-                 params: [transactionParameters],
-             });
+         const txHash = await window.ethereum.request({method:'eth_sendTransaction', params: [transactionParameters],});
          return {
              success: true,
-             status: "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" + txHash
+             status: "成功！Etherscan: https://ropsten.etherscan.io/tx/" + txHash
          }
      } 
      catch (error) 
      {
          return {
              success: false,
-             status: "😥 Something went wrong: " + error.message
+             status: "失败: " + error.message
          }
      }
 
 
 }
+

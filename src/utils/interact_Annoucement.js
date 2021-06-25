@@ -17,10 +17,17 @@ export const InspectNFT = async(IdOfNFT) => {
         }
     }
 
-    const result_= await contract.methods.ownerOf(IdOfNFT).call();
+    const TheDressOfOwner= await contract.methods.ownerOf(IdOfNFT).call();
+    const TheSalePrice= await contract.methods.SalePrice(IdOfNFT).call();
+    const TokenUrI= await contract.methods.tokenURI(IdOfNFT).call();
+    const TotalNFT= await contract.methods.totalSupply().call();
 
     return {
         success: true,    
-        SearchResult_:  result_
+        SearchResult_:"Owner:"+TheDressOfOwner+"    Price:"+TheSalePrice +"    链接:"+TokenUrI,
+        TheSalePrice_:TheSalePrice,
+        TokenUrI_:TokenUrI,
+        TotalNFT_:TotalNFT
     };
 }
+

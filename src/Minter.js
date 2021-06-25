@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { connectWallet, mintNFT } from "./utils/interact.js";
+import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
 import { InspectNFT } from "./utils/interact_Annoucement.js";
 
 const Minter = (props) => {
@@ -14,6 +14,12 @@ const Minter = (props) => {
 
   const [NFT_ID_FOR_search, set_NFT_ID_FOR_search] = useState("");
   const [SearchResult,setSearchResult]=useState("");
+  const [SalePrice,setSalePrice]=useState("");
+  const [TokenURI,setTokenURI]=useState("");
+  const [TotalNFT,setTotalNFT]=useState("");
+
+  const [TheIdToBuy,setTheIdToBuy]=useState("");
+  const [ThePriceToBuy,setThePriceToBuy]=useState("");
  
   useEffect(async () => { //TODO: implement
     if (window.ethereum) { //if Metamask installed
@@ -51,8 +57,24 @@ const Minter = (props) => {
   };
 
   const onNFT_search_Pressed = async () => {
-    const { SearchResult_ } = await InspectNFT(NFT_ID_FOR_search);
+    const { SearchResult_,TheSalePrice_,TokenUrI_,TotalNFT_} = await InspectNFT(NFT_ID_FOR_search);
     setSearchResult( SearchResult_ );
+    setSalePrice(TheSalePrice_);
+    setTokenURI(TokenUrI_);
+    setTotalNFT(TotalNFT_);
+  };
+
+  const GetPrice = async () => {
+    const { TheSalePrice_} = await InspectNFT(NFT_ID_FOR_search);
+    setSearchResult( SearchResult_ );
+    setSalePrice(TheSalePrice_);
+    setTokenURI(TokenUrI_);
+    setTotalNFT(TotalNFT_);
+  };
+
+  const onBuyNFTButtonPressed = async () => {
+    const { status } = await BuyNFT(url, name, description);
+    setStatus(status);
   };
 
   return (
@@ -120,9 +142,10 @@ const Minter = (props) => {
           <button id="mintButton" onClick={onNFT_search_Pressed}>
             TO Inspect NFT
           </button>
-          <p id="status">
-            {SearchResult}
-          </p>
+          <p id="status">{SearchResult}</p>
+          <p id="status">{SalePrice}</p>
+          <p id="status">{TokenURI}</p>
+          <p id="status">{TotalNFT}</p>
       </div>
 
       <div>
@@ -136,10 +159,14 @@ const Minter = (props) => {
             <input
               type="text"
               placeholder="34"
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) =>{ 
+                setTheIdToBuy(event.target.value);
+                
+
+              }}
             />
           </form>
-          <button id="mintButton" onClick={onMintPressed}>
+          <button id="mintButton" onClick={onBuyNFTButtonPressed}>
             Buy
           </button>
           <p id="status">
