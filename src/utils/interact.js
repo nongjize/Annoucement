@@ -39,22 +39,22 @@ export const connectWallet = async () => {
 };
 
 
-export const mintNFT = async(url, name, description) => {
+export const mintNFT = async(url, name, description,mintPrice) => {
+    var BN = web3.utils.BN;
     
-    //error handling
+    // ////////////////////////////////////////////////// IPFS 相关
+    // //error handling
     // if (url.trim() === "" || (name.trim() === "" || description.trim() === "")) { 
     //     return {
     //         success: false,
     //         status: "❗Please make sure all fields are completed before minting.",
     //     }
     // }
-  
     // //make metadata
     // const metadata = new Object();
     // metadata.name = name;
     // metadata.image = url;
     // metadata.description = description;
-
     // //pinata pin request
     // const pinataResponse = await pinJSONToIPFS(metadata);
     // if (!pinataResponse.success) {
@@ -64,6 +64,7 @@ export const mintNFT = async(url, name, description) => {
     //     }
     // } 
     // const tokenURI = pinataResponse.pinataUrl;  
+    // ////////////////////////////////////////////////// IPFS 相关
 
     //load smart contract
     window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
@@ -73,8 +74,8 @@ export const mintNFT = async(url, name, description) => {
         to: contractAddress, // Required except during contract publications.
         from: window.ethereum.selectedAddress, // must match user's active address.
         //nonce:"1",
-        value: "0x1b933df8f0b38000",
-        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress, url,123).encodeABI() //make call to NFT smart contract 
+        value: web3.utils.toHex(new BN(web3.utils.toWei("12.25","ether")).toString()),//发布固定费用
+        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress,url,web3.utils.toWei(mintPrice,"ether")).encodeABI() //make call to NFT smart contract 
     };
   
     //sign transaction via Metamask
@@ -112,8 +113,8 @@ export const BuyNFT = async(IdOfNFT,salePriceInEth,SetPriceInEth) => {
      const transactionParameters = {
          to: contractAddress, // Required except during contract publications.
          from: window.ethereum.selectedAddress, // must match user's active address.
-         value: salePriceInEth,
-         'data': window.contract.methods.BuyNFT(IdOfNFT,SetPriceInEth).encodeABI() //make call to NFT smart contract 
+         value: web3.utils.toHex(web3.utils.toWei(salePriceInEth, 'ether').toString()),//web3.utils.numberToHex('234');
+         'data': window.contract.methods.BuyNFT(IdOfNFT,web3.utils.toWei(SetPriceInEth,"ether")).encodeABI() //make call to NFT smart contract 
      };
    
      //sign transaction via Metamask
