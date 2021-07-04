@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
 import { InspectNFT } from "./utils/interact_Annoucement.js";
+import { create } from 'ipfs-http-client'
 
+const client = create('/ip4/127.0.0.1/tcp/5001')
 const Minter = (props) => {
 
   //State variables
@@ -21,6 +23,20 @@ const Minter = (props) => {
   const [TotalNFT,setTotalNFT]=useState("");//当前NFT总量
 
   const [ThePriceAfterOwned,setThePriceAfterOwned]=useState("")
+
+  const [fileUrl, updateFileUrl] = useState(``)
+  async function onChange(e) {
+    const file = e.target.files[0]
+    try {
+      const added = await client.add(file)
+      console.log('CID: ', added.cid)
+      console.log('path: ', added.path)
+      const url = `http://127.0.0.1:8080/ipfs/${added.path}`
+      updateFileUrl(url)
+    } catch (error) {
+      console.log('Error uploading file: ', error)
+    }  
+  }
  
   useEffect(async () => { //TODO: implement
     if (window.ethereum) { //if Metamask installed
@@ -91,6 +107,18 @@ const Minter = (props) => {
             Simply add your asset's link, name, and description, then press "Mint."
           </p>
           <form>
+          
+            <h2>文件上传</h2>
+            <input
+              type="file"
+              onChange={onChange}
+            />
+            {
+              fileUrl && (
+                <img src={fileUrl} width="60px" />
+              )
+            }
+          
             <h2>IPFS链接（数字指纹）: </h2>
             <input
               type="text"
