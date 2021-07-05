@@ -12,6 +12,8 @@ const Minter = (props) => {
   const [status, setStatus] = useState("");
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
+  const [AssetCID, setAssetCID] = useState("");
+  const [MatedataCID, setMatedataCID] = useState("");
   const [url, setURL] = useState("");
   const [MintPrice, setMintPrice] = useState("");
 
@@ -33,10 +35,13 @@ const Minter = (props) => {
       console.log('path: ', added.path)
       const url = `http://127.0.0.1:8080/ipfs/${added.path}`
       updateFileUrl(url)
+      setAssetCID(added.path)
     } catch (error) {
       console.log('Error uploading file: ', error)
     }  
   }
+
+
  
   useEffect(async () => { //TODO: implement
     if (window.ethereum) { //if Metamask installed
@@ -69,9 +74,25 @@ const Minter = (props) => {
   };
 
   const onMintPressed = async () => {
-    const { status } = await mintNFT(url, name, description,MintPrice);
-    setStatus(status);
+    try {
+    //make metadata
+    const metadata = new Object();
+     metadata.name = name;
+     metadata.asset = AssetCID;
+     metadata.description = description;
+    
+    //“FirstName”: “xu”,”LastName”,”Xiang”
+      const added = await client.add(JSON.stringify(metadata))
+      setMatedataCID(added.path)
+      const { status } = await mintNFT(MatedataCID,MintPrice);
+      setStatus(status);
+    } catch (error) {
+      console.log('Error At OnMintPressed: ', error)
+    } 
   };
+
+
+  
 
   const onNFT_search_Pressed = async () => {
     const { success,SearchResult_,TheSalePrice_,TokenUrI_,TotalNFT_} = await InspectNFT(NFT_ID_FOR_search);
@@ -113,18 +134,14 @@ const Minter = (props) => {
               type="file"
               onChange={onChange}
             />
+            {AssetCID}
+            <br />
             {
               fileUrl && (
                 <img src={fileUrl} width="60px" />
               )
             }
           
-            <h2>IPFS链接（数字指纹）: </h2>
-            <input
-              type="text"
-              placeholder="e.g. https://gateway.pinata.cloud/ipfs/<hash>"
-              onChange={(event) => setURL(event.target.value)}
-            />
             <h2>Name: </h2>
             <input
               type="text"
@@ -147,13 +164,14 @@ const Minter = (props) => {
           <button id="mintButton" onClick={onMintPressed}>
             Mint NFT
           </button>
+          {MatedataCID}
+            <br />
           <p id="status">
             {status}
           </p>
       </div>
       
       <div >
-         
           <h1 id="title">Inspect NFT</h1>
           <p>
             input the id of the NFT you want to inspect,if it exit,it well return the owner,sale price, access IPFS(the degist)
@@ -180,8 +198,6 @@ const Minter = (props) => {
             )}
           </p>
       </div>
-
- 
 
     </div>
   );

@@ -39,7 +39,7 @@ export const connectWallet = async () => {
 };
 
 
-export const mintNFT = async(url, name, description,mintPrice) => {
+export const mintNFT = async(MetadataURI,mintPrice) => {
     var BN = web3.utils.BN;
     
     // ////////////////////////////////////////////////// IPFS 相关
@@ -75,7 +75,7 @@ export const mintNFT = async(url, name, description,mintPrice) => {
         from: window.ethereum.selectedAddress, // must match user's active address.
         //nonce:"1",
         value: web3.utils.toHex(new BN(web3.utils.toWei("12.25","ether")).toString()),//发布固定费用
-        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress,url,web3.utils.toWei(mintPrice,"ether")).encodeABI() //make call to NFT smart contract 
+        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress,MetadataURI,web3.utils.toWei(mintPrice,"ether")).encodeABI() //make call to NFT smart contract 
     };
   
     //sign transaction via Metamask
