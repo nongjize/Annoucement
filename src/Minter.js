@@ -21,10 +21,14 @@ const Minter = (props) => {
   const [NFT_ID_FOR_search, set_NFT_ID_FOR_search] = useState("");//id
   const [SearchResult,setSearchResult]=useState("");//查询结果
   const [SalePrice,setSalePrice]=useState("");//价格
-  const [TokenURI,setTokenURI]=useState("");//URI链接
+  const [ResultMatedataCID,setResultMatedataCID]=useState("");//URI链接
   const [TotalNFT,setTotalNFT]=useState("");//当前NFT总量
 
   const [ThePriceAfterOwned,setThePriceAfterOwned]=useState("")
+
+  
+
+  const [MetadataUrI, updateMetadataUrI] = useState(``)
 
   const [fileUrl, updateFileUrl] = useState(``)
   async function onChange(e) {
@@ -84,7 +88,7 @@ const Minter = (props) => {
     //“FirstName”: “xu”,”LastName”,”Xiang”
       const added = await client.add(JSON.stringify(metadata))
       setMatedataCID(added.path)
-      const { status } = await mintNFT(MatedataCID,MintPrice);
+      const { status } = await mintNFT(added.path,MintPrice);
       setStatus(status);
     } catch (error) {
       console.log('Error At OnMintPressed: ', error)
@@ -95,12 +99,16 @@ const Minter = (props) => {
   
 
   const onNFT_search_Pressed = async () => {
-    const { success,SearchResult_,TheSalePrice_,TokenUrI_,TotalNFT_} = await InspectNFT(NFT_ID_FOR_search);
+    const { success,SearchResult_,TheSalePrice_,MatedataCID_,TotalNFT_} = await InspectNFT(NFT_ID_FOR_search);
     setSearchResult( SearchResult_ );
     setSalePrice(TheSalePrice_);
-    setTokenURI(TokenUrI_);
+    setResultMatedataCID(MatedataCID_);
     setTotalNFT(TotalNFT_);
     sethaveResult(success);
+
+    updateMetadataUrI(`http://127.0.0.1:8080/ipfs/`+MatedataCID_);
+
+
   };
 
   const onBuyNFTButtonPressed = async () => {
@@ -188,11 +196,27 @@ const Minter = (props) => {
             TO Inspect NFT
           </button>
           <p id="status" style={{"white-space":"pre"}} >{SearchResult}</p>
+          <br />
+            {
+              //MetadataUrI
+              //MetadataUrI && (<text src={MetadataUrI} />)
+              <p src={MetadataUrI}/>
+            }
           <p>
           {haveResult ? ((SalePrice==="0")? ( <span>此NFT不出售</span>) : (
+            <div>
+                             <input
+               type="text"
+               placeholder="The Price afer you owed,set zero means don't seal"
+               onChange={(event) => setThePriceAfterOwned(event.target.value)}
+             />
               <button id="ByuNFTButton" onClick={onBuyNFTButtonPressed}>
               Buy
-              </button>)
+              </button>
+
+            </div>
+              )
+              
             ) : (
               <span>请输入ID浏览NFT</span>
             )}
