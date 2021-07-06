@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
 import { InspectNFT } from "./utils/interact_Annoucement.js";
-import { create } from 'ipfs-http-client'
+import { create } from 'ipfs-http-client';
+const BufferList = require('bl/BufferList')
 
 const client = create('/ip4/127.0.0.1/tcp/5001')
 const Minter = (props) => {
@@ -27,8 +28,11 @@ const Minter = (props) => {
   const [ThePriceAfterOwned,setThePriceAfterOwned]=useState("")
 
   
+  const [MetadataContent, updateMetadataContent] = useState(``)
 
-  const [MetadataUrI, updateMetadataUrI] = useState(``)
+  const [ResultName, updateResultName] = useState(``)
+  const [ResultAssetCID, updateResultAssetCID] = useState(``)
+  const [ResultDescription, updateResultDescription] = useState(``)
 
   const [fileUrl, updateFileUrl] = useState(``)
   async function onChange(e) {
@@ -106,7 +110,27 @@ const Minter = (props) => {
     setTotalNFT(TotalNFT_);
     sethaveResult(success);
 
-    updateMetadataUrI(`http://127.0.0.1:8080/ipfs/`+MatedataCID_);
+    for await (const file of client.get(MatedataCID_)) {
+      console.log(file.path)
+
+      const content = new BufferList()
+      for await (const chunk of file.content) {
+        content.append(chunk)
+      }
+
+      const strToObj = JSON.parse(content.toString())
+      //console.log(strToObj.name)
+      //console.log(strToObj.asset)
+      //console.log(strToObj.description)
+
+      updateResultName(strToObj.name)
+      updateResultAssetCID(strToObj.asset)
+      updateResultDescription(strToObj.description)
+
+      //updateMetadataContent(content.toString());
+    }
+
+    //updateMetadataContent(Buffer.concat(chunks).toString());
 
 
   };
@@ -196,16 +220,17 @@ const Minter = (props) => {
             TO Inspect NFT
           </button>
           <p id="status" style={{"white-space":"pre"}} >{SearchResult}</p>
-          <br />
             {
-              //MetadataUrI
-              //MetadataUrI && (<text src={MetadataUrI} />)
-              <p src={MetadataUrI}/>
+              <div>
+              <p> {ResultName&&("名称"+ResultName)} </p>
+              <p> {ResultDescription&&("概述"+ResultDescription)} </p>
+              <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="60px" />)} </p>
+              </div>
             }
-          <p>
+          <div>
           {haveResult ? ((SalePrice==="0")? ( <span>此NFT不出售</span>) : (
             <div>
-                             <input
+              <input
                type="text"
                placeholder="The Price afer you owed,set zero means don't seal"
                onChange={(event) => setThePriceAfterOwned(event.target.value)}
@@ -214,13 +239,13 @@ const Minter = (props) => {
               Buy
               </button>
 
-            </div>
+          </div>
               )
               
             ) : (
               <span>请输入ID浏览NFT</span>
             )}
-          </p>
+          </div>
       </div>
 
     </div>
