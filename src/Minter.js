@@ -222,8 +222,8 @@ const Minter = (props) => {
           <p id="status" style={{"white-space":"pre"}} >{SearchResult}</p>
             {
               <div>
-              <p> {ResultName&&("名称"+ResultName)} </p>
-              <p> {ResultDescription&&("概述"+ResultDescription)} </p>
+              <p> {ResultName&&("名称: "+ResultName)} </p>
+              <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
               <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="60px" />)} </p>
               </div>
             }

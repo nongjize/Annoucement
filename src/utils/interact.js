@@ -57,16 +57,20 @@ export const mintNFT = async(MetadataURI,mintPrice) => {
     //sign transaction via Metamask
     try 
     {
-        const txHash = await window.ethereum.request(
-            {
-                method: 'eth_sendTransaction',
-                params: [transactionParameters],
-            }
-            );
+        const txHash = await window.ethereum.request({method: 'eth_sendTransaction',params: [transactionParameters],});
         return {
             success: true,
             status: "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" + txHash
         }
+        // const receipt=await txHash.wait()
+        // for (const event of receipt.events) {
+        //     if (event.event !== 'Transfer') {
+        //         console.log('ignoring unknown event type ', event.event)
+        //         continue
+        //     }
+        // return {success: true,
+        //         status: "已经完成发布，NFT ID为："+event.args.tokenId.toString()}
+        // }
     } 
     catch (error) 
     {
@@ -75,6 +79,8 @@ export const mintNFT = async(MetadataURI,mintPrice) => {
             status: "失败: " + error.message
         }
     }
+
+
 }
 
 export const BuyNFT = async(IdOfNFT,salePriceInwei,SetPriceInEth) => {
