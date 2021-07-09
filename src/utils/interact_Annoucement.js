@@ -9,6 +9,22 @@ const web3 = createAlchemyWeb3(alchemyKey);
 Contract.setProvider('http://127.0.0.1:8545');
 
 var contract = new Contract(contractABI, contractAddress);
+export const TotalNFTs = async() => {
+    try
+    {
+        const TotalNFT= await contract.methods.totalSupply().call();
+        return {
+            success: true,  
+            TotalNFT_:TotalNFT
+        };
+    }catch(error)
+    {
+        return {
+            success: false, 
+            TotalNFT_:"失败: "
+        };
+    }
+}
 
 export const InspectNFT = async(IdOfNFT) => {
     
@@ -32,7 +48,8 @@ export const InspectNFT = async(IdOfNFT) => {
             //SearchResult_:"Owner:"+TheDressOfOwner+"\nPrice:"+TheSalePrice +"ETH\n链接:"+TokenUrI,
             TheSalePrice_:TheSalePrice,
             MatedataCID_:TokenUrI,
-            TotalNFT_:TotalNFT
+            TotalNFT_:TotalNFT,
+            Owner_:TheDressOfOwner
         };
 
     }catch(error)

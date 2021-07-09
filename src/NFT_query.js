@@ -5,18 +5,10 @@ import { create } from 'ipfs-http-client';
 const BufferList = require('bl/BufferList')
 
 const client = create('/ip4/127.0.0.1/tcp/5001')
-const NFT_inspect = (props) => {
+const NFT_query = (props) => {
 
-  //State variables
-  const [isConnected, setConnectedStatus] = useState(false);
-  const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
-  const [name, setName] = useState("");
-  const [description, setDescription] = useState("");
-  const [AssetCID, setAssetCID] = useState("");
-  const [MatedataCID, setMatedataCID] = useState("");
-  const [url, setURL] = useState("");
-  const [MintPrice, setMintPrice] = useState("");
+  
 
   const [haveResult, sethaveResult] = useState(false);
   const [NFT_ID_FOR_search, set_NFT_ID_FOR_search] = useState("");//id
@@ -27,37 +19,14 @@ const NFT_inspect = (props) => {
 
   const [ThePriceAfterOwned,setThePriceAfterOwned]=useState("")
 
-  
-  const [MetadataContent, updateMetadataContent] = useState(``)
-
   const [ResultName, updateResultName] = useState(``)
   const [ResultAssetCID, updateResultAssetCID] = useState(``)
   const [ResultDescription, updateResultDescription] = useState(``)
 
-  const [fileUrl, updateFileUrl] = useState(``) 
-  useEffect(async () => { //TODO: implement
-    if (window.ethereum) { //if Metamask installed
-      try {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" }) //get Metamask wallet
-        if (accounts.length) { //if a Metamask account is connected
-          setConnectedStatus(true);
-          setWallet(accounts[0]);
-        } else {
-          setConnectedStatus(false);
-          setStatus("🦊 Connect to Metamask using the top right button.");
-        }
-      } catch {
-        setConnectedStatus(false);
-        setStatus(
-          "🦊 Connect to Metamask using the top right button. " +
-            walletAddress
-        );
-      }
-    } 
-  });
+
 
   const onNFT_search_Pressed = async () => {
-    const { success,SearchResult_,TheSalePrice_,MatedataCID_,TotalNFT_} = await InspectNFT(NFT_ID_FOR_search);
+    const { success,SearchResult_,TheSalePrice_,MatedataCID_,TotalNFT_} = await InspectNFT(props.ID);
     setSearchResult( SearchResult_ );
     setSalePrice(TheSalePrice_);
     setResultMatedataCID(MatedataCID_);
@@ -82,32 +51,20 @@ const NFT_inspect = (props) => {
     const { status } = await BuyNFT(NFT_ID_FOR_search, SalePrice,ThePriceAfterOwned);
     setStatus(status);
   };
+  onNFT_search_Pressed();
 
   return (
-    <div className="Minter">
-          <h1 id="title">Inspect NFT</h1>
-
-          <form>
-            <h2>NFT ID: </h2>
-            <input
-              type="text"
-              placeholder="34"
-              onChange={(event) => set_NFT_ID_FOR_search(event.target.value)}
-            />
-          </form>
-          <button id="mintButton" onClick={onNFT_search_Pressed}>
-            TO Inspect NFT
-          </button>
+    //<div className="Minter">
+    <div>
+          <h1 id="title">{props.ID}</h1>
           <p id="status" style={{"white-space":"pre"}} >{SearchResult}</p>
-            {
-              <div>
-              <p> {ResultName&&("名称: "+ResultName)} </p>
-              <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-              <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="60px" />)} </p>
-              </div>
-            }
           <div>
-          {haveResult ? 
+            <p> {ResultName&&("名称: "+ResultName)} </p>
+            <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
+            <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="60px" />)} </p>
+          </div>
+          <div>
+          {haveResult && 
           ((SalePrice==="0")? ( <span>此NFT不出售</span>) : 
             (
               <div>
@@ -120,11 +77,10 @@ const NFT_inspect = (props) => {
             </div>
             )    
           ) 
-          : 
-          (<span>请输入ID浏览NFT</span>)}
+          }
           </div>
-    </div>
+  </div>
   );
 };
 
-export default NFT_inspect;
+export default NFT_query;

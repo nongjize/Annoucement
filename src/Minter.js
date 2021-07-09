@@ -50,14 +50,7 @@ const Minter = (props) => {
     } 
   });
 
-  const connectWalletPressed = async () => { //TODO: implement
-    const walletResponse = await connectWallet();
-    setConnectedStatus(walletResponse.connectedStatus);
-    setStatus(walletResponse.status);
-    if (isConnected) {
-      setWallet(walletAddress);
-    }
-  };
+  
 
   const onMintPressed = async () => {
     try {
@@ -78,35 +71,16 @@ const Minter = (props) => {
   };
   return (
     <div className="Minter">
-      <button id="walletButton" onClick={connectWalletPressed}>
-            {isConnected ? (
-              "👛 Connected: " +
-              String(walletAddress).substring(0, 6) +
-              "..." +
-              String(walletAddress).substring(38)
-            ) : (
-              <span>👛 Connect Wallet</span>
-            )}
-          </button>
-
-          <h1 id="title">发布版权声明</h1>
+          <h1 id="title">发布声明</h1>
           <p>
             Simply add your asset's link, name, and description, then press "Mint."
           </p>
           <form>
-          
             <h2>文件上传</h2>
-            <input
-              type="file"
-              onChange={onChange}
-            />
+            <input type="file" onChange={onChange} />
             {AssetCID}
             <br />
-            {
-              fileUrl && (
-                <img src={fileUrl} width="60px" />
-              )
-            }
+            {fileUrl && (<img src={fileUrl} width="60px" />)}
           
             <h2>Name: </h2>
             <input
@@ -132,9 +106,7 @@ const Minter = (props) => {
           </button>
           {MatedataCID}
             <br />
-          <p id="status">
             {status}
-          </p>
           </div>
   );
 };
