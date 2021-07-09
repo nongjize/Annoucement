@@ -98,7 +98,7 @@ const NFT_inspect = (props) => {
           <button id="mintButton" onClick={onNFT_search_Pressed}>
             TO Inspect NFT
           </button>
-          <p id="status" style={{"white-space":"pre"}} >{SearchResult}</p>
+          <p id="status" style={{"whiteSpace":"pre"}} >{SearchResult}</p>
             {
               <div>
               <p> {ResultName&&("名称: "+ResultName)} </p>

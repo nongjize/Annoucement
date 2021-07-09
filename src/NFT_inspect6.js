@@ -1,22 +1,30 @@
-import { useEffect, useState } from "react";
-import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
-import { InspectNFT } from "./utils/interact_Annoucement.js";
-import { create } from 'ipfs-http-client';
+import {  useState } from "react";
 import NFT_Detail_MultiDisplay from './NFT_Detail_MultiDisplay';
-const BufferList = require('bl/BufferList')
-
-const client = create('/ip4/127.0.0.1/tcp/5001')
-
-
+import { TotalNFTs } from "./utils/interact_Annoucement.js";
 const NFT_inspect6 = (props) => {
+  const [TotalNFTss, setTotalNFTss] = useState('');
+  const RefreshNewestNFT = async () => {
+    const {success,TotalNFT_}=await TotalNFTs();
+    if (success&&parseInt(TotalNFT_)>=6)
+    {
+      setTotalNFTss(TotalNFT_);
+    }
+  }
+
+  RefreshNewestNFT();
   return (
-    <div  class="wrapper">
-      <NFT_Detail_MultiDisplay  ID={props.ID1}></NFT_Detail_MultiDisplay>
-      <NFT_Detail_MultiDisplay  ID={props.ID2}></NFT_Detail_MultiDisplay>
-      <NFT_Detail_MultiDisplay  ID={props.ID3}></NFT_Detail_MultiDisplay>
-      <NFT_Detail_MultiDisplay  ID={props.ID4}></NFT_Detail_MultiDisplay>
-      <NFT_Detail_MultiDisplay  ID={props.ID5}></NFT_Detail_MultiDisplay>
-      <NFT_Detail_MultiDisplay  ID={props.ID6}></NFT_Detail_MultiDisplay>
+    <div>
+      <button id="mintButton" onClick={RefreshNewestNFT}>RefreshForDebug</button>
+      {TotalNFTss&&
+        <div  className="wrapper">
+          {<NFT_Detail_MultiDisplay  ID={TotalNFTss}/>}
+          {<NFT_Detail_MultiDisplay  ID={(parseInt(TotalNFTss)-1).toString()}/>}
+          {<NFT_Detail_MultiDisplay  ID={(parseInt(TotalNFTss)-2).toString()}/>}
+          {<NFT_Detail_MultiDisplay  ID={(parseInt(TotalNFTss)-3).toString()}/>}
+          {<NFT_Detail_MultiDisplay  ID={(parseInt(TotalNFTss)-4).toString()}/>}
+          {<NFT_Detail_MultiDisplay  ID={(parseInt(TotalNFTss)-5).toString()}/>}
+        </div>
+      }
     </div>
   );
 };

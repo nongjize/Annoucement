@@ -57,7 +57,7 @@ const NFT_query = (props) => {
     //<div className="Minter">
     <div>
           <h1 id="title">{props.ID}</h1>
-          <p id="status" style={{"white-space":"pre"}} >{SearchResult}</p>
+          <p id="status" style={{"whiteSpace":"pre"}} >{SearchResult}</p>
           <div>
             <p> {ResultName&&("名称: "+ResultName)} </p>
             <p> {ResultDescription&&("概述: "+ResultDescription)} </p>

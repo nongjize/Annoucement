@@ -142,6 +142,13 @@ button {
   grid-row-gap:1rem;
   
 }
+.WrapperForQueryInMainPage{
+  display:grid;
+  grid-template-columns:auto auto auto;
+  grid-column-gap:auto;
+  grid-row-gap:auto;
+  
+}
 
 .wrapper div{
   background:rgb(66, 52, 52);
