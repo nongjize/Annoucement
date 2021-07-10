@@ -2,6 +2,7 @@ import './App.css';
 import Minter from './Minter'
 import NFT_inspect from './NFT_inspect';
 import NFT_inspect6 from './NFT_inspect6';
+import DAPPintroduction from './DAPPintroduction'
 import React, { useState } from 'react';
 import Popup from './utils/Popup';
 import WalletConnect from './WalletConnect';
@@ -34,6 +35,7 @@ function App() {
       {isMyNFTsOpen && <Popup content={<MyNFTs ID1="1" ID2="2" ID3="3" ID4="4" ID5="5" ID6="6" />} handleClose={toggleMyNFTsPopup}/>}
 
       <WalletConnect/>
+      <DAPPintroduction/>
       <br/>
       <br/>
       <br/>
