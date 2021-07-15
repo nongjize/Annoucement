@@ -1,8 +1,11 @@
-import {  useState } from "react";
+import {  useEffect,useState } from "react";
 import NFT_Detail_MultiDisplay from './NFT_Detail_MultiDisplay';
 import { TotalNFTs } from "./utils/interact_Annoucement.js";
 const NFT_inspect6 = (props) => {
   const [TotalNFTss, setTotalNFTss] = useState('');
+
+  useEffect(async function RefreshMyNFTs_info(){RefreshNewestNFT();},[TotalNFTss]);
+
   const RefreshNewestNFT = async () => {
     const {success,TotalNFT_}=await TotalNFTs();
     if (success&&parseInt(TotalNFT_)>=6)
@@ -11,10 +14,8 @@ const NFT_inspect6 = (props) => {
     }
   }
 
-  RefreshNewestNFT();
   return (
     <div>
-      <button id="mintButton" onClick={RefreshNewestNFT}>RefreshForDebug</button>
       {TotalNFTss&&
         <div  className="wrapper">
           {<NFT_Detail_MultiDisplay  ID={TotalNFTss}/>}

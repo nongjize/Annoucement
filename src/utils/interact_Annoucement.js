@@ -81,7 +81,7 @@ export const InspectNFT = async(IdOfNFT) => {
         const TotalNFT= await contract.methods.totalSupply().call();
         return {
             success: true,    
-            SearchResult_:"Owner:"+TheDressOfOwner+"\nPrice:"+web3.utils.fromWei(TheSalePrice,'ether') +"ETH\nMatedataCID:"+TokenUrI,
+            SearchResult_:"拥有者账号:"+TheDressOfOwner+"\n原数据IPFS CID:"+TokenUrI+"\n价格:"+web3.utils.fromWei(TheSalePrice,'ether') +"ETH",
             //SearchResult_:"Owner:"+TheDressOfOwner+"\nPrice:"+TheSalePrice +"ETH\n链接:"+TokenUrI,
             TheSalePrice_:TheSalePrice,
             MatedataCID_:TokenUrI,

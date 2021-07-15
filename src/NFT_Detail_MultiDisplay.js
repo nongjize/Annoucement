@@ -20,10 +20,11 @@ const NFT_Detail_MultiDisplay = (props) => {
 
   const [isInspectWindowOpen, setIsInspectWindowOpen] = useState(false);
   const toggleInspectPopup = () => { setIsInspectWindowOpen(!isInspectWindowOpen);}
-  useEffect(async function RefreshMyNFTs_info() 
-  {onNFT_search_Pressed();},[] );
 
-  const onNFT_search_Pressed = async () => {
+  useEffect(async function RefreshMyNFTs_info() {onNFT_search_Pressed();},[] );
+
+  const onNFT_search_Pressed = async () => 
+  {
     const { success,TheSalePrice_,MatedataCID_,TotalNFT_} = await InspectNFT(props.ID);
     setSalePrice(TheSalePrice_);
     setResultMatedataCID(MatedataCID_);
@@ -43,17 +44,19 @@ const NFT_Detail_MultiDisplay = (props) => {
       updateResultAssetCID(strToObj.asset)
       updateResultDescription(strToObj.description)
       
-    } };
-  //onNFT_search_Pressed();
+    } 
+  };
+  //onNFT_search_Pressed();//
   return (
     <div >
       { 
         (!haveResult? ( <span>无</span>) : 
           (
-          <div onClick={toggleInspectPopup}>
-            <p> {ResultName&&("名称: "+ResultName)} </p>
-            <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-            <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="200px" />)} </p>
+          <div >
+             <div onClick={toggleInspectPopup}>
+              <p> {ResultName} </p>
+              <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}` } width="300px" />)} </p>
+            </div>
             {isInspectWindowOpen && <Popup content={<NFT_query  ID={props.ID}/>} handleClose={toggleInspectPopup}/>}
           </div>
           )    
