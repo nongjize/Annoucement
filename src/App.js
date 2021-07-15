@@ -22,6 +22,14 @@ function App() {
   const [isInspectWindowOpen, setIsInspectWindowOpen] = useState(false);
   const toggleInspectPopup = () => { setIsInspectWindowOpen(!isInspectWindowOpen);}
 
+  //const [isOpen, setIsOpen] = useState(false);
+
+  let walletAddress_Root="123";
+  const HandlesetWallet_Root=(address_1)=> {
+    walletAddress_Root=address_1;
+    console.log("ssssssssssssssssssset walletAddress_Root:"+walletAddress_Root);
+  }
+
   
   
 
@@ -32,9 +40,9 @@ function App() {
       {isOpen && <Popup content={<Minter></Minter>} handleClose={togglePopup}/>}
 
       <button id="Creat_NFT_Button" onClick={toggleMyNFTsPopup}> MyNFTs</button>
-      {isMyNFTsOpen && <Popup content={<MyNFTs ID1="1" ID2="2" ID3="3" ID4="4" ID5="5" ID6="6" />} handleClose={toggleMyNFTsPopup}/>}
+      {isMyNFTsOpen && <Popup content={<MyNFTs address={walletAddress_Root} />} handleClose={toggleMyNFTsPopup}/>}
 
-      <WalletConnect/>
+      <WalletConnect />
       <DAPPintroduction/>
       <br/>
       <br/>

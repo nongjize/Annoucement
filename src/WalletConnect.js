@@ -20,6 +20,7 @@ const WalletConnect = (props) => {
         if (accounts.length) { //if a Metamask account is connected
           setConnectedStatus(true);
           setWallet(accounts[0]);
+
         } else {
           setConnectedStatus(false);
           setStatus("🦊 Connect to Metamask using the top right button.");
@@ -40,10 +41,14 @@ const WalletConnect = (props) => {
     setStatus(walletResponse.status);
     if (isConnected) {
       setWallet(walletAddress);
+
+
     }
   };
 
-  
+
+
+  //connectWalletPressed();
   return (
     <div className="Minter">
       <button id="walletButton" onClick={connectWalletPressed}>

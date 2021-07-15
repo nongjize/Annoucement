@@ -20,6 +20,8 @@ const NFT_Detail_MultiDisplay = (props) => {
 
   const [isInspectWindowOpen, setIsInspectWindowOpen] = useState(false);
   const toggleInspectPopup = () => { setIsInspectWindowOpen(!isInspectWindowOpen);}
+  useEffect(async function RefreshMyNFTs_info() 
+  {onNFT_search_Pressed();},[] );
 
   const onNFT_search_Pressed = async () => {
     const { success,TheSalePrice_,MatedataCID_,TotalNFT_} = await InspectNFT(props.ID);
@@ -42,7 +44,7 @@ const NFT_Detail_MultiDisplay = (props) => {
       updateResultDescription(strToObj.description)
       
     } };
-  onNFT_search_Pressed();
+  //onNFT_search_Pressed();
   return (
     <div >
       { 

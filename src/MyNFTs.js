@@ -15,65 +15,45 @@ const MyNFTs = (props) => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
   const [NFT_arr, setNFT_arr] = useState(new Array());
-  //const  state=persons:[{name:'小仙女',age:'18'},{name:'小玉',age:'18'},{name:'家璇',age:'18'}]；
-  let res = [];
-  const numbers = [1, 2, 3, 4, 5];
-
-  // useEffect(async () => { //TODO: implement
-  //   if (window.ethereum) { //if Metamask installed
-  //     try {
-  //       const accounts = await window.ethereum.request({ method: "eth_accounts" }) //get Metamask wallet
-  //       if (accounts.length) { //if a Metamask account is connected
-  //         setConnectedStatus(true);
-  //         setWallet(accounts[0]);
-  //       } else {
-  //         setConnectedStatus(false);
-  //         setStatus("🦊 Connect to Metamask using the top right button.");
-  //       }
-  //     } catch {
-  //       setConnectedStatus(false);
-  //       setStatus(
-  //         "🦊 Connect to Metamask using the top right button. " +
-  //           walletAddress
-  //       );
-  //     }
-  //   } 
-  // });
-
-
-
-  const RefreshMyNFTs_info = async () => {
-    const {success,TotalNFT_}=await TotalNFTsOfAddress(walletAddress);
-    if (success)
+  
+  useEffect( 
+    async function RefreshMyNFTs_info() 
     {
-      setTotalNFTss(TotalNFT_);
-      const totalNFT_int=parseInt(TotalNFT_);
-      var NFTs=new Array();
-      //for(var i = 0; i<5; i++)
-      //{
-        //const {success_,TokenID_}=await TokenOfOwnerByIndex(walletAddress,parseInt(i));
-        //if(success_)
-        //{
-        //  NFTs[i]=TokenID_;
-        //}
-        //console.log("2kkkkkkkkkkkkkkkkkkkkkkkkkk");
-        //console.log(i);
-      //}
-      //console.log("oooooooo    nly  one");
+      const accounts = await window.ethereum.request({ method: "eth_accounts" }) //get Metamask wallet
+      if (accounts.length) { 
+        var NFTs=new Array();
+        setWallet(accounts[0]);
+        console.log("mmmmmmmmmmmmmmmmmmmyyyyyyyyyyyyyyy:"+accounts[0]);
+        const {success,TotalNFT_}=await TotalNFTsOfAddress(accounts[0]);
+         if (success)
+         {
+           setTotalNFTss(TotalNFT_);
+          const totalNFT_int=parseInt(TotalNFT_);
+         
+         for(var i = 0; i<totalNFT_int; i++)
+         {
+           const {success_,TokenID_}=await TokenOfOwnerByIndex(accounts[0],parseInt(i));
+           if(success_)
+           {
+             NFTs[i]=TokenID_;
+           }
+           console.log("2kkkkkkkkkkkkkkkkkkkkkkkkkk：：："+NFTs[i]);
+         }
+        setNFT_arr(NFTs);
+        }
+      } 
+    },
+    []
+  );
 
-      setNFT_arr(NFTs);
-    }
-  }
-
-  RefreshMyNFTs_info();
-  console.log("ffffffffffff  nly  one");
-  const listItems = NFT_arr.map((number) =><li key={number.toString()}>{number}</li>);
+  //const listItems = ;
   return (
-    <div>
+    <div >
       <h1 id="title">{"我的(地址："+walletAddress+")NFT"}</h1>
       <p> {TotalNFTss&&("拥有NFT数量: "+TotalNFTss)} </p>
+      <p>{status}</p>
       <p>
-     {listItems}
+     {NFT_arr.map((number) =><li key={number.toString()}>{number}</li>)}
       </p>
     </div>
   );

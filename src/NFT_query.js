@@ -23,8 +23,7 @@ const NFT_query = (props) => {
   const [ResultAssetCID, updateResultAssetCID] = useState(``)
   const [ResultDescription, updateResultDescription] = useState(``)
 
-
-
+  useEffect(async function RefreshMyNFTs_info(){onNFT_search_Pressed();},[]);
   const onNFT_search_Pressed = async () => {
     const { success,SearchResult_,TheSalePrice_,MatedataCID_,TotalNFT_} = await InspectNFT(props.ID);
     setSearchResult( SearchResult_ );
@@ -51,8 +50,6 @@ const NFT_query = (props) => {
     const { status } = await BuyNFT(NFT_ID_FOR_search, SalePrice,ThePriceAfterOwned);
     setStatus(status);
   };
-  onNFT_search_Pressed();
-
   return (
     //<div className="Minter">
     <div>
