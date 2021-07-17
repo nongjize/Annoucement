@@ -8,7 +8,7 @@ const web3 = createAlchemyWeb3(alchemyKey);
 const BufferList = require('bl/BufferList')
 
 const client = create('/ip4/127.0.0.1/tcp/5001')
-const NFT_query = (props) => {
+const My_NFT_query_one = (props) => {
 
   const [status, setStatus] = useState("");
   
@@ -68,7 +68,7 @@ const NFT_query = (props) => {
   };
 
   const onBuyNFTButtonPressed = async () => {
-    const { status } = await BuyNFT(props.ID, SalePrice,ThePriceAfterOwned);
+    const { status } = await BuyNFT(NFT_ID_FOR_search, SalePrice,ThePriceAfterOwned);
     setStatus(status);
   };
 
@@ -84,32 +84,14 @@ const NFT_query = (props) => {
           <div>
             <p> {ResultName&&("名称: "+ResultName)} </p>
             <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-            <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="500px" />)} </p>
-          </div>
-          <div>
-          {haveResult && 
-          ((SalePrice==="0")? ( <span>此NFT不出售</span>) : 
-            ((ConnectedAccount===Owner)?(<span>目前为此链接账号所拥有</span>):
-             (
-                <div>
-                  <button id="ByuNFTButton" onClick={onBuyNFTButtonPressed_before_setPrice}>Buy</button>
-                  {
-                    displayPriceInputfile&&
-                    (
-                    <div>
-                      <input type="text" placeholder="设置买后价格" onChange={(event) => setThePriceAfterOwned(event.target.value)}/>
-                      <button id="ByuNFTButton" onClick={onBuyNFTButtonPressed}>确定</button> 
-                    </div>
-                    )
-                  }
-                </div>
-              ) 
-             ) 
-          ) 
-          }
+            <p> {ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="500px" />)} </p>
           </div>
   </div>
+
+
+
+
   );
 };
 
-export default NFT_query;
+export default My_NFT_query_one;

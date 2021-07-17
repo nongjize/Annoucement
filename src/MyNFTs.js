@@ -4,6 +4,7 @@ import { InspectNFT } from "./utils/interact_Annoucement.js";
 import { create } from 'ipfs-http-client';
 import NFT_Detail_MultiDisplay from './NFT_Detail_MultiDisplay';
 import { TotalNFTsOfAddress,TokenOfOwnerByIndex } from "./utils/interact_Annoucement.js";
+import My_NFT_query_one from "./My_NFT_query_one.js";
 const BufferList = require('bl/BufferList')
 
 const client = create('/ip4/127.0.0.1/tcp/5001')
@@ -40,15 +41,21 @@ const MyNFTs = (props) => {
     },
     []
   );
-
+//{NFT_arr.map((number) =><li key={number.toString()}>{number}</li>)}
   return (
-    <div >
-      <h1 id="title">{"我的(地址："+walletAddress+")NFT"}</h1>
-      <p> {TotalNFTss&&("拥有NFT数量: "+TotalNFTss)} </p>
-      <p>{status}</p>
-      <p>
-     {NFT_arr.map((number) =><li key={number.toString()}>{number}</li>)}
-      </p>
+    <div >{
+      
+      (walletAddress==="" ? <span>请连接钱包</span> :
+        (<div >
+          <h1 id="title">{"我的(地址："+walletAddress+")NFT"}</h1>
+          <p> {TotalNFTss&&("拥有NFT数量: "+TotalNFTss)} </p>
+          <p>{status}</p>
+          {NFT_arr.map((number) =><My_NFT_query_one key={number.toString()}  ID={number.toString()}/>)}
+        </div>)
+      )
+      
+      }
+     
     </div>
   );
 };

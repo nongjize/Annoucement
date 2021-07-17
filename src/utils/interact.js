@@ -50,7 +50,7 @@ export const mintNFT = async(MetadataURI,mintPrice) => {
         to: contractAddress, // Required except during contract publications.
         from: window.ethereum.selectedAddress, // must match user's active address.
         //nonce:"1",
-        value: web3.utils.toHex(new BN(web3.utils.toWei("12.25","ether")).toString()),//发布固定费用
+        value: web3.utils.toHex(new BN(web3.utils.toWei("0.02","ether")).toString()),//发布固定费用
         'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress,MetadataURI,web3.utils.toWei(mintPrice,"ether")).encodeABI() //make call to NFT smart contract 
     };
   
@@ -92,6 +92,7 @@ export const BuyNFT = async(IdOfNFT,salePriceInwei,SetPriceInEth) => {
     }
     
     window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
+     
      const transactionParameters = {
          to: contractAddress, // Required except during contract publications.
          from: window.ethereum.selectedAddress, // must match user's active address.

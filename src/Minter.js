@@ -70,7 +70,10 @@ const Minter = (props) => {
     } 
   };
   return (
-    <div className="Minter">
+    <div >{
+      
+      (walletAddress==="" ? <span>请连接钱包</span> :(
+        <div className="Minter">
           <h1 id="title">发布声明</h1>
           <p>
             Simply add your asset's link, name, and description, then press "Mint."
@@ -108,6 +111,10 @@ const Minter = (props) => {
             <br />
             {status}
           </div>
+      ) )}
+    
+      </div>
+    
   );
 };
 
