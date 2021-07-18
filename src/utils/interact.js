@@ -1,4 +1,5 @@
 import {pinJSONToIPFS} from './pinata.js'
+import { MintFee } from "./interact_Annoucement.js";
 require('dotenv').config();
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
@@ -41,46 +42,34 @@ export const connectWallet = async () => {
 
 export const mintNFT = async(MetadataURI,mintPrice) => {
     var BN = web3.utils.BN;
-
-    //load smart contract
-    window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
-
-    //set up your Ethereum transaction
-    const transactionParameters = {
-        to: contractAddress, // Required except during contract publications.
-        from: window.ethereum.selectedAddress, // must match user's active address.
-        //nonce:"1",
-        value: web3.utils.toHex(new BN(web3.utils.toWei("0.02","ether")).toString()),//发布固定费用
-        'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress,MetadataURI,web3.utils.toWei(mintPrice,"ether")).encodeABI() //make call to NFT smart contract 
-    };
-  
-    //sign transaction via Metamask
-    try 
+    window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();//load smart contract
+    const { success,MintFee_ } = await MintFee();//获取发布NFT所需费用
+    if(success)
     {
-        const txHash = await window.ethereum.request({method: 'eth_sendTransaction',params: [transactionParameters],});
-        return {
-            success: true,
-            status: "✅ Check out your transaction on Etherscan: https://ropsten.etherscan.io/tx/" + txHash
-        }
-        // const receipt=await txHash.wait()
-        // for (const event of receipt.events) {
-        //     if (event.event !== 'Transfer') {
-        //         console.log('ignoring unknown event type ', event.event)
-        //         continue
-        //     }
-        // return {success: true,
-        //         status: "已经完成发布，NFT ID为："+event.args.tokenId.toString()}
-        // }
-    } 
-    catch (error) 
-    {
-        return {
-            success: false,
-            status: "失败: " + error.message
+        console.log("获取发布NFT所需费用为："+MintFee_);
+        const transactionParameters = {
+            to: contractAddress, // Required except during contract publications.
+            from: window.ethereum.selectedAddress, // must match user's active address.
+            //nonce:"1",
+            value: web3.utils.toHex(new BN(web3.utils.toWei(MintFee_,"ether")).toString()),//发布固定费用
+            'data': window.contract.methods.mintNFT(window.ethereum.selectedAddress,MetadataURI,web3.utils.toWei(mintPrice,"ether")).encodeABI() //make call to NFT smart contract 
+        };
+        try //sign transaction via Metamask
+        {
+            const txHash = await window.ethereum.request({method: 'eth_sendTransaction',params: [transactionParameters],});
+            return {
+                success: true,
+                status: "NFT发布信息已经提交区块链，区块链交易哈希为："+txHash+" NFT发布成功与否需要等待区块链矿工确认，您可以在区块链上查看具体信息（通过Etherscan等区块链浏览器）" 
+            }
+        } 
+        catch (error) 
+        {
+            return {
+                success: false,
+                status: "失败: " + error.message
+            }
         }
     }
-
-
 }
 
 export const BuyNFT = async(IdOfNFT,salePriceInwei,SetPriceInEth) => {
@@ -90,33 +79,40 @@ export const BuyNFT = async(IdOfNFT,salePriceInwei,SetPriceInEth) => {
             SearchResult_: "❗ID为空.",
         }
     }
+    if(window.ethereum)
+    {
+        window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
+        const transactionParameters = {
+            to: contractAddress, // Required except during contract publications.
+            from: window.ethereum.selectedAddress, // must match user's active address.
+            value:web3.utils.toHex(salePriceInwei),
+            'data': window.contract.methods.BuyNFT(IdOfNFT,web3.utils.toWei(SetPriceInEth,"ether")).encodeABI() //make call to NFT smart contract 
+        };
+        try //sign transaction via Metamask
+        {
+            const txHash = await window.ethereum.request({method:'eth_sendTransaction', params: [transactionParameters],});
+            return {
+                success: true,
+                status: "NFT购买信息已经提交区块链，区块链交易哈希为："+txHash+" NFT购买成功与否需要等待区块链矿工确认，您可以在区块链上查看具体信息（通过Etherscan等区块链浏览器）"
+            }
+        } 
+        catch (error) 
+        {
+            return {
+                success: false,
+                status: "购买失败: " + error.message
+            }
+        }
+    }
+    else
+    {
+        return {
+            success: false,
+            status: "购买失败，需要安装metamask并关联到要购买的以太坊账号"
+        }
+    }
     
-    window.contract = await new web3.eth.Contract(contractABI, contractAddress);//loadContract();
-     
-     const transactionParameters = {
-         to: contractAddress, // Required except during contract publications.
-         from: window.ethereum.selectedAddress, // must match user's active address.
-         //value: web3.utils.toHex(web3.utils.toWei(salePriceInEth, 'ether').toString()),//web3.utils.numberToHex('234');
-         value:web3.utils.toHex(salePriceInwei),
-         'data': window.contract.methods.BuyNFT(IdOfNFT,web3.utils.toWei(SetPriceInEth,"ether")).encodeABI() //make call to NFT smart contract 
-     };
-   
-     //sign transaction via Metamask
-     try 
-     {
-         const txHash = await window.ethereum.request({method:'eth_sendTransaction', params: [transactionParameters],});
-         return {
-             success: true,
-             status: "成功！Etherscan: https://ropsten.etherscan.io/tx/" + txHash
-         }
-     } 
-     catch (error) 
-     {
-         return {
-             success: false,
-             status: "失败: " + error.message
-         }
-     }
+    
 
 
 }

@@ -28,15 +28,45 @@ const NFT_query = (props) => {
   const [ResultAssetCID, updateResultAssetCID] = useState(``)
   const [ResultDescription, updateResultDescription] = useState(``)
   const [displayPriceInputfile, setdisplayPriceInputfile] = useState(false)
+  const [IsInstallMetaMask,setIsInstallMetaMask] = useState(false);
+  const [isConnected, setConnectedStatus] = useState(false);
+  const [walletAddress, setWallet] = useState("");//BuyNFTButtonPressed
+  const [BuyNFTButtonPressed, setBuyNFTButtonPressed] = useState(false);
 
   useEffect(async function RefreshMyNFTs_info(){
-    onNFT_search_Pressed();
-    const accounts = await window.ethereum.request({ method: "eth_accounts" })
-      if (accounts.length) 
-      { 
+    if(window.ethereum){//已安装metaMask
+      setIsInstallMetaMask(true);
+      try 
+      {
+        const accounts = await window.ethereum.request({ method: "eth_accounts" })
+        if (accounts.length) 
+        { 
+        setConnectedStatus(true);
+        setWallet(web3.utils.toChecksumAddress(accounts[0]));
         setConnectedAccount(web3.utils.toChecksumAddress(accounts[0]));
-        console.log("连接账号："+web3.utils.toChecksumAddress(accounts[0]))
+        }
+        else 
+        {
+          setConnectedStatus(false);
+          setStatus("🦊 Connect to Metamask using the top right button.");
+        }
+      }        
+      catch 
+      {
+        setConnectedStatus(false);
+        setStatus(
+          "🦊 Connect to Metamask using the top right button. " +
+            walletAddress
+        );
       }
+    }else//没有安装MetaMask
+    {
+      setIsInstallMetaMask(false);
+    }
+    
+
+    onNFT_search_Pressed();
+    
 
   },[]);
 
@@ -49,7 +79,7 @@ const NFT_query = (props) => {
     setTotalNFT(TotalNFT_);
     sethaveResult(success);
     setOwner(Owner_);
-    console.log("所有者："+Owner_)
+    //console.log("所有者："+Owner_)
 
     for await (const file of client.get(MatedataCID_)) 
     {
@@ -68,38 +98,42 @@ const NFT_query = (props) => {
   };
 
   const onBuyNFTButtonPressed = async () => {
+    setBuyNFTButtonPressed(true);
+    setStatus("购买中...请在metamask钱包中确认支付（包含区块链交易手续费金额）");
     const { status } = await BuyNFT(props.ID, SalePrice,ThePriceAfterOwned);
     setStatus(status);
   };
 
   const onBuyNFTButtonPressed_before_setPrice = async () => {
+
     setdisplayPriceInputfile(!displayPriceInputfile);
   };
 
   return (
-    //<div className="Minter">
     <div className="Minter">
-          <h1 id="title">{"版权NFT号："+props.ID}</h1>
-          <p id="status" style={{"whiteSpace":"pre"}} >{SearchResult}</p>
-          <div>
-            <p> {ResultName&&("名称: "+ResultName)} </p>
-            <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-            <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="500px" />)} </p>
-          </div>
-          <div>
+      <div>
           {haveResult && 
-          ((SalePrice==="0")? ( <span>此NFT不出售</span>) : 
-            ((ConnectedAccount===Owner)?(<span>目前为此链接账号所拥有</span>):
+          ((ConnectedAccount===Owner)?(<span>【该NFT为本账号所拥有】</span>) : 
+            ((SalePrice==="0")? ( <span>【此NFT为非售状态】</span>):
+            BuyNFTButtonPressed?(<span>{status}</span>):
              (
                 <div>
-                  <button id="ByuNFTButton" onClick={onBuyNFTButtonPressed_before_setPrice}>Buy</button>
+                  <button  onClick={onBuyNFTButtonPressed_before_setPrice}>Buy</button>
                   {
-                    displayPriceInputfile&&
-                    (
-                    <div>
-                      <input type="text" placeholder="设置买后价格" onChange={(event) => setThePriceAfterOwned(event.target.value)}/>
-                      <button id="ByuNFTButton" onClick={onBuyNFTButtonPressed}>确定</button> 
-                    </div>
+                    displayPriceInputfile&&(
+                      (!IsInstallMetaMask)? ( <span>没有检测到metamask,安装metamask钱包</span>):
+                      !isConnected?(<span>{status}</span>):
+                      
+                      (
+                        <div id="mainBodyer">
+                         <div className="one">
+                            <p>设置购买后价格(单位ETH)</p>
+                            <p>设置为0表示购买后不出售(默认为0)</p>
+                         </div> 
+                         <div className="two"> <input id="leftBodyer"  type="text" placeholder="在此输入购买后的价格" onChange={(event) => setThePriceAfterOwned(event.target.value)}/>
+                          <button  onClick={onBuyNFTButtonPressed}>确认购买</button> </div> 
+                        </div>
+                        )
                     )
                   }
                 </div>
@@ -107,8 +141,15 @@ const NFT_query = (props) => {
              ) 
           ) 
           }
-          </div>
-  </div>
+      </div>
+      <h1 id="title">{"版权NFT号："+props.ID}</h1>
+      <p id="status" style={{"whiteSpace":"pre"}} >{SearchResult}</p>
+      <div>
+        <p> {ResultName&&("名称: "+ResultName)} </p>
+        <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
+        <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="500px" />)} </p>
+      </div>
+    </div>
   );
 };
 

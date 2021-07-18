@@ -27,6 +27,23 @@ export const TotalNFTs = async() => {
     }
 }
 
+export const MintFee = async() => {
+    try
+    {
+        const mintfee_= await contract.methods.Fee().call();
+        return {
+            success: true,  
+            MintFee_:mintfee_
+        };
+    }catch(error)
+    {
+        return {
+            success: false, 
+            MintFee_:"0"
+        };
+    }
+}
+
 export const TotalNFTsOfAddress = async(address) => {//balanceOf(address owner) 
     try
     {
@@ -100,49 +117,3 @@ export const InspectNFT = async(IdOfNFT) => {
         };
     }
 }
-
-// export const InspectNFTs = async(firstID,lastID) => 
-// {
-//     if (firstID.trim() === "" ) { 
-//         return {
-//             success: false,
-//             SearchResult_: "❗firstID为空."
-//         }
-//     }
-//     if (lastID.trim() === "" ) { 
-//         return {
-//             success: false,
-//             SearchResult_: "❗lastID为空."
-//         }
-//     }
-//     if (lastID<firstID) { 
-//         return {
-//             success: false,
-//             SearchResult_: "❗lastID不能比firstID小."
-//         }
-//     }
-
-//     try
-//     {
-//         var SearchResult="";
-//         for (var i=firstID;i<lastID;i++)
-//         { 
-//             const TheDressOfOwner= await contract.methods.ownerOf(i).call();
-//             const TheSalePrice= await contract.methods.SalePrice(i).call();
-//             const TokenUrI= await contract.methods.tokenURI(i).call();
-//             SearchResult+="Owner:"+TheDressOfOwner+"\nPrice:"+web3.utils.fromWei(TheSalePrice,'ether') +"ETH\n链接:"+TokenUrI+"\n\n"
-//         }
-//         return {
-//             success: true,    
-//             SearchResult_:SearchResult
-//         };
-
-//     }catch(error)
-//     {
-//         return {
-//             success: false,    
-//             SearchResult_:"失败: " + error.message,
-//         };
-//     }
-// }
-

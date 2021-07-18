@@ -15,6 +15,8 @@ const Minter = (props) => {
   const [MatedataCID, setMatedataCID] = useState("");
   const [MintPrice, setMintPrice] = useState("");
   const [fileUrl, updateFileUrl] = useState(``)
+  const [IsInstallMetaMask,setIsInstallMetaMask] = useState(false);//MintPressed
+  const [MintPressed,setMintPressed] = useState(false);//MintPressed
   async function onChange(e) {
     const file = e.target.files[0]
     try {
@@ -31,6 +33,7 @@ const Minter = (props) => {
 
   useEffect(async () => { //TODO: implement
     if (window.ethereum) { //if Metamask installed
+      setIsInstallMetaMask(true);
       try {
         const accounts = await window.ethereum.request({ method: "eth_accounts" }) //get Metamask wallet
         if (accounts.length) { //if a Metamask account is connected
@@ -47,32 +50,42 @@ const Minter = (props) => {
             walletAddress
         );
       }
-    } 
+    } else
+    {
+      setIsInstallMetaMask(false);
+    }
+    
   });
 
   
 
-  const onMintPressed = async () => {
-    try {
-    //make metadata
-    const metadata = new Object();
-     metadata.name = name;
-     metadata.asset = AssetCID;
-     metadata.description = description;
-    
-    //“FirstName”: “xu”,”LastName”,”Xiang”
+  const onMintPressed = async () => 
+  {
+    setMintPressed(true);
+    setStatus("NFT发布中...");
+    try 
+    {
+      const metadata = new Object();
+      metadata.name = name;
+      metadata.asset = AssetCID;
+      metadata.description = description;
       const added = await client.add(JSON.stringify(metadata))
       setMatedataCID(added.path)
       const { status } = await mintNFT(added.path,MintPrice);
       setStatus(status);
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       console.log('Error At OnMintPressed: ', error)
     } 
   };
   return (
-    <div >{
-      
-      (walletAddress==="" ? <span>请连接钱包</span> :(
+    <div>
+    {
+      !IsInstallMetaMask? <span>发布新的NFT需要关联到您的以太坊账号，浏览器没有安装metaMask钱包，请安装钱包，</span> :
+      (walletAddress==="" ? <span>请连接钱包</span> :
+      MintPressed?  <div>{MatedataCID} <br/> {status} </div>:
+      (
         <div className="Minter">
           <h1 id="title">发布声明</h1>
           <p>
@@ -107,13 +120,11 @@ const Minter = (props) => {
           <button id="mintButton" onClick={onMintPressed}>
             Mint NFT
           </button>
-          {MatedataCID}
-            <br />
-            {status}
+
           </div>
-      ) )}
-    
-      </div>
+      ) )
+    }
+    </div>
     
   );
 };

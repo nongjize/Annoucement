@@ -6,13 +6,12 @@ const client = create('/ip4/127.0.0.1/tcp/5001')
 
 const WalletConnect = (props) => {
   //State variables
-  const [isConnected, setConnectedStatus] = useState(false);
   const [walletAddress, setWallet] = useState("");
-  const [status, setStatus] = useState("");
   const [AssetCID, setAssetCID] = useState("");
   const [fileUrl, updateFileUrl] = useState(``)
 
-
+  const [isConnected, setConnectedStatus] = useState(false);
+  const [status, setStatus] = useState("");
   useEffect(async () => { //TODO: implement
     if (window.ethereum) { //if Metamask installed
       try {
