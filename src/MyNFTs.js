@@ -1,14 +1,6 @@
 import { useEffect, useState } from "react";
-import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
-import { InspectNFT } from "./utils/interact_Annoucement.js";
-import { create } from 'ipfs-http-client';
-import NFT_Detail_MultiDisplay from './NFT_Detail_MultiDisplay';
 import { TotalNFTsOfAddress,TokenOfOwnerByIndex } from "./utils/interact_Annoucement.js";
 import My_NFT_query_one from "./My_NFT_query_one.js";
-const BufferList = require('bl/BufferList')
-
-const client = create('/ip4/127.0.0.1/tcp/5001')
-
 
 const MyNFTs = (props) => {
   const [TotalNFTss, setTotalNFTss] = useState('');
@@ -17,10 +9,6 @@ const MyNFTs = (props) => {
   const [walletAddress, setWallet] = useState("");
   const [status, setStatus] = useState("");
   const [NFT_arr, setNFT_arr] = useState(new Array());
-
-  //const [isConnected, setConnectedStatus] = useState(false);
- // const [status, setStatus] = useState("");
-  
   useEffect( 
     async function RefreshMyNFTs_info() 
     {
@@ -51,8 +39,6 @@ const MyNFTs = (props) => {
             setConnectedStatus(false);
             setStatus("🦊 Connect to Metamask using the top right button.");
           }
-
-
         }
         catch {
           setConnectedStatus(false);
@@ -61,20 +47,15 @@ const MyNFTs = (props) => {
               walletAddress
           );
         }
-
-
-
       }
       else//未安装metaMask钱包
       {
         setIsInstallMetaMask(false);
       }
- 
     },
     []
   );
-//{NFT_arr.map((number) =><li key={number.toString()}>{number}</li>)}
-//!isConnected?<span>{status}</span>:
+
   return (
     <div >{
       !IsInstallMetaMask? <span>需要关联到您的以太坊账号才能查询到您账号下的NFT，浏览器没有安装metaMask钱包，请安装钱包，</span> :(
@@ -86,14 +67,8 @@ const MyNFTs = (props) => {
           {NFT_arr.map((number) =><My_NFT_query_one key={number.toString()}  ID={number.toString()}/>)}
         </div>)
       )
-
-
       )
-      
-
-      
       }
-     
     </div>
   );
 };

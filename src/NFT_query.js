@@ -14,7 +14,6 @@ const NFT_query = (props) => {
   
 
   const [haveResult, sethaveResult] = useState(false);
-  const [NFT_ID_FOR_search, set_NFT_ID_FOR_search] = useState("");//id
   const [SearchResult,setSearchResult]=useState("");//查询结果
   const [SalePrice,setSalePrice]=useState("");//价格
   const [ResultMatedataCID,setResultMatedataCID]=useState("");//URI链接
