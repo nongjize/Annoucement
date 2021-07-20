@@ -6,7 +6,8 @@ const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey); 
 
 const contractABI = require('../MyNFT.json')
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+//const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";//0x45F621B5916A94be390e0c763982711b64c9F63F
+const contractAddress = process.env.REACT_APP_ContractAddress;
 
 export const connectWallet = async () => {
     if (window.ethereum) 

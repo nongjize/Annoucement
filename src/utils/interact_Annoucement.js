@@ -1,14 +1,17 @@
 var Contract = require('web3-eth-contract');
 const contractABI = require('../MyNFT.json')
-const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
+//const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";//0x45F621B5916A94be390e0c763982711b64c9F63F
+const contractAddress = process.env.REACT_APP_ContractAddress;
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey); 
 
+
+
 // set provider for all later instances to use
 Contract.setProvider('http://127.0.0.1:8545');
-
-var contract = new Contract(contractABI, contractAddress);
+var contract_ = new Contract(contractABI, contractAddress);            //接口 'http://127.0.0.1:8545'
+var contract= new web3.eth.Contract(contractABI, contractAddress);  //接口 Alckemy
 
 export const TotalNFTs = async() => {
     try
