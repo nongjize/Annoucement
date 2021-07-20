@@ -9,10 +9,7 @@ const BufferList = require('bl/BufferList')
 
 const client = create('/ip4/127.0.0.1/tcp/5001')
 const NFT_query = (props) => {
-
   const [status, setStatus] = useState("");
-  
-
   const [haveResult, sethaveResult] = useState(false);
   const [SearchResult,setSearchResult]=useState("");//查询结果
   const [SalePrice,setSalePrice]=useState("");//价格

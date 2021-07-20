@@ -17,16 +17,21 @@ const Minter = (props) => {
   const [fileUrl, updateFileUrl] = useState(``)
   const [IsInstallMetaMask,setIsInstallMetaMask] = useState(false);//MintPressed
   const [MintPressed,setMintPressed] = useState(false);//MintPressed
-  async function onChange(e) {
+
+  async function onChange(e) //上传文件到ipfs 获取CID
+  {
     const file = e.target.files[0]
-    try {
+    try 
+    {
       const added = await client.add(file)
-      console.log('CID: ', added.cid)
-      console.log('path: ', added.path)
+      //console.log('CID: ', added.cid)
+      //console.log('path: ', added.path)
       const url = `http://127.0.0.1:8080/ipfs/${added.path}`
       updateFileUrl(url)
       setAssetCID(added.path)
-    } catch (error) {
+    } 
+    catch (error) 
+    {
       console.log('Error uploading file: ', error)
     }  
   }
@@ -69,7 +74,7 @@ const Minter = (props) => {
       metadata.name = name;
       metadata.asset = AssetCID;
       metadata.description = description;
-      const added = await client.add(JSON.stringify(metadata))
+      const added = await client.add(JSON.stringify(metadata))//上传 metadata json 对象，获取CID 即metadataCID
       setMatedataCID(added.path)
       const { status } = await mintNFT(added.path,MintPrice);
       setStatus(status);
