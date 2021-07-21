@@ -1,8 +1,11 @@
 import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
 import { create } from 'ipfs-http-client';
+import { pinFileToIPFS,pinJSONToIPFS} from "./utils/pinata.js"
 
-const client = create('/ip4/127.0.0.1/tcp/5001')
+const client = create('/ip4/47.104.182.83/tcp/5001')//https://api.pinata.cloud/psa//The process cannot access the file because it is being used by anot
+//const client = create('https://api.pinata.cloud/psa')//
+const IPFS_gateway = process.env.REACT_APP_PINATA_GATEWAY;
 
 const Minter = (props) => {
   //State variables
@@ -23,10 +26,26 @@ const Minter = (props) => {
     const file = e.target.files[0]
     try 
     {
+      //use pinata ipfs
+      // console.log("文件："+file);
+      // const pinFileToIPFS_response = await pinFileToIPFS("G://fornft.png");
+      // if(pinFileToIPFS_response.success)
+      // {
+      //   const url = IPFS_gateway+pinFileToIPFS_response.pinataCID
+      //   updateFileUrl(url)
+      //   setAssetCID(pinFileToIPFS_response.pinataCID)
+      //   console.log("文件CID："+pinFileToIPFS_response.pinataCID);
+      // }
+      // else
+      // {
+      //   console.log("文件上传到IPFS gateway失败："+pinFileToIPFS_response.message);
+      // }
+
+
+      //use local ipfs node
       const added = await client.add(file)
-      //console.log('CID: ', added.cid)
-      //console.log('path: ', added.path)
-      const url = `http://127.0.0.1:8080/ipfs/${added.path}`
+      const url = `http://47.104.182.83:8080/ipfs/${added.path}`
+      //const url = IPFS_gateway+added.path
       updateFileUrl(url)
       setAssetCID(added.path)
     } 
@@ -74,10 +93,27 @@ const Minter = (props) => {
       metadata.name = name;
       metadata.asset = AssetCID;
       metadata.description = description;
-      const added = await client.add(JSON.stringify(metadata))//上传 metadata json 对象，获取CID 即metadataCID
-      setMatedataCID(added.path)
-      const { status } = await mintNFT(added.path,MintPrice);
-      setStatus(status);
+      
+      // use pinata ipfs 
+      const pinJSONToIPFS_response = await pinJSONToIPFS(metadata);
+      if (pinJSONToIPFS_response.success) 
+      {
+        setMatedataCID(pinJSONToIPFS_response.pinataCID)
+        const { status } = await mintNFT(pinJSONToIPFS_response.pinataCID,MintPrice);
+        setStatus(status);
+      }
+      else
+      {
+        console.log('错误: ', pinJSONToIPFS_response.message)
+      } 
+      
+
+
+      //use local ipfs node
+      //const added = await client.add(JSON.stringify(metadata))//上传 metadata json 对象，获取CID 即metadataCID
+      //setMatedataCID(added.path)
+      //const { status } = await mintNFT(added.path,MintPrice);
+      //setStatus(status);
     } 
     catch (error) 
     {
