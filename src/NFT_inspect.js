@@ -2,9 +2,13 @@ import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
 import { InspectNFT } from "./utils/interact_Annoucement.js";
 import { create } from 'ipfs-http-client';
+
+const ipfs_gateway = process.env.REACT_APP_IPFS_GATEWAY;
+const ipfs_api = process.env.REACT_APP_IPFS_API;
+
 const BufferList = require('bl/BufferList')
 
-const client = create('/ip4/127.0.0.1/tcp/5001')
+const client = create(ipfs_api)
 const NFT_inspect = (props) => {
 
   //State variables
@@ -103,7 +107,7 @@ const NFT_inspect = (props) => {
               <div>
               <p> {ResultName&&("名称: "+ResultName)} </p>
               <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-              <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="60px" />)} </p>
+              <p> { ResultAssetCID && ( <img src={ipfs_gateway+ResultAssetCID} width="60px" />)} </p>
               </div>
             }
           <div>

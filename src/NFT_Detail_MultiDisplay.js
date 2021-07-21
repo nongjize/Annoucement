@@ -4,9 +4,13 @@ import { InspectNFT } from "./utils/interact_Annoucement.js";
 import { create } from 'ipfs-http-client';
 import NFT_query from './NFT_query';
 import Popup from './utils/Popup';
+
+const ipfs_gateway = process.env.REACT_APP_IPFS_GATEWAY;
+const ipfs_api = process.env.REACT_APP_IPFS_API;
+
 const BufferList = require('bl/BufferList')
 
-const client = create('/ip4/127.0.0.1/tcp/5001')
+const client = create(ipfs_api)
 const NFT_Detail_MultiDisplay = (props) => {
   const [haveResult, sethaveResult] = useState(false);
   const [SearchResult,setSearchResult]=useState("");//查询结果
@@ -55,7 +59,7 @@ const NFT_Detail_MultiDisplay = (props) => {
           <div >
              <div onClick={toggleInspectPopup}>
               <p> {ResultName} </p>
-              <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}` } width="300px" />)} </p>
+              <p> { ResultAssetCID && ( <img src={ipfs_gateway+ ResultAssetCID} width="300px" />)} </p>
             </div>
             {isInspectWindowOpen && <Popup content={<NFT_query  ID={props.ID}/>} handleClose={toggleInspectPopup}/>}
           </div>

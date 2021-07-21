@@ -2,12 +2,16 @@ import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
 import { InspectNFT } from "./utils/interact_Annoucement.js";
 import { create } from 'ipfs-http-client';
+
+const ipfs_gateway = process.env.REACT_APP_IPFS_GATEWAY;
+const ipfs_api = process.env.REACT_APP_IPFS_API;
+
 const alchemyKey = process.env.REACT_APP_ALCHEMY_KEY;
 const { createAlchemyWeb3 } = require("@alch/alchemy-web3");
 const web3 = createAlchemyWeb3(alchemyKey); 
 const BufferList = require('bl/BufferList')
 
-const client = create('/ip4/127.0.0.1/tcp/5001')
+const client = create(ipfs_api)
 const NFT_query = (props) => {
   const [status, setStatus] = useState("");
   const [haveResult, sethaveResult] = useState(false);
@@ -114,7 +118,7 @@ const NFT_query = (props) => {
             BuyNFTButtonPressed?(<span>{status}</span>):
              (
                 <div>
-                  <button  onClick={onBuyNFTButtonPressed_before_setPrice}>Buy</button>
+                  <button  onClick={onBuyNFTButtonPressed_before_setPrice}>购买</button>
                   {
                     displayPriceInputfile&&(
                       (!IsInstallMetaMask)? ( <span>没有检测到metamask,安装metamask钱包</span>):
@@ -124,7 +128,7 @@ const NFT_query = (props) => {
                         <div id="mainBodyer">
                          <div className="one">
                             <p>设置购买后价格(单位ETH)</p>
-                            <p>设置为0表示购买后不出售(默认为0)</p>
+                            <p>设置为0表示购买后将不出售</p>
                          </div> 
                          <div className="two"> <input id="leftBodyer"  type="text" placeholder="在此输入购买后的价格" onChange={(event) => setThePriceAfterOwned(event.target.value)}/>
                           <button  onClick={onBuyNFTButtonPressed}>确认购买</button> </div> 
@@ -143,7 +147,7 @@ const NFT_query = (props) => {
       <div>
         <p> {ResultName&&("名称: "+ResultName)} </p>
         <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-        <p> { ResultAssetCID && ( <img src={`http://127.0.0.1:8080/ipfs/${ResultAssetCID}`} width="500px" />)} </p>
+        <p> { ResultAssetCID && ( <img src={ipfs_gateway+ResultAssetCID} width="500px" />)} </p>
       </div>
     </div>
   );

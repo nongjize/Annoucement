@@ -36,23 +36,20 @@ function App() {
   return (
     <div className="App">
        
-      <button id="Creat_NFT_Button" onClick={togglePopup}> CREAT</button>
+      <button id="Creat_NFT_Button" onClick={togglePopup}>我要发布版权NFT</button>
       {isOpen && <Popup content={<Minter></Minter>} handleClose={togglePopup}/>}
 
-      <button id="Creat_NFT_Button" onClick={toggleMyNFTsPopup}> MyNFTs</button>
+      <button id="Creat_NFT_Button" onClick={toggleMyNFTsPopup}> 我的版权NFT</button>
       {isMyNFTsOpen && <Popup content={<MyNFTs address={walletAddress_Root} />} handleClose={toggleMyNFTsPopup}/>}
 
       <WalletConnect />
       <DAPPintroduction/>
-      <br/>
-      <br/>
-      <br/>
-      <br/>
+    
       <div className="Minter">
         <div className="WrapperForQueryInMainPage">
-          <h2>Input ID To query NFT: </h2>
+          <h2>输入版权NFT编号查询: </h2>
           <input type="text" placeholder="34"onChange={(event) => set_NFT_ID_FOR_search(event.target.value)}/>
-          <button id="mintButton" onClick={toggleInspectPopup}>QUERY</button>
+          <button id="mintButton" onClick={toggleInspectPopup}>查询</button>
           {isInspectWindowOpen && <Popup content={<NFT_query  ID={NFT_ID_FOR_search}/>} handleClose={toggleInspectPopup}/>}
         </div>
       </div>

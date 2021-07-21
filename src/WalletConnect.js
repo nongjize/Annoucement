@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
-import { create } from 'ipfs-http-client';
 
-const client = create('/ip4/127.0.0.1/tcp/5001')
+
 
 const WalletConnect = (props) => {
   //State variables
   const [walletAddress, setWallet] = useState("");
-  const [AssetCID, setAssetCID] = useState("");
-  const [fileUrl, updateFileUrl] = useState(``)
-
   const [isConnected, setConnectedStatus] = useState(false);
   const [status, setStatus] = useState("");
   useEffect(async () => { //TODO: implement
@@ -52,12 +48,12 @@ const WalletConnect = (props) => {
     <div className="Minter">
       <button id="walletButton" onClick={connectWalletPressed}>
             {isConnected ? (
-              "👛 Connected: " +
+              "我的区块链账号: " +
               String(walletAddress).substring(0, 6) +
               "..." +
               String(walletAddress).substring(38)
             ) : (
-              <span>👛 Connect Wallet</span>
+              <span>连接区块链钱包</span>
             )}
       </button>
       <p id="status">
