@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { connectWallet, mintNFT,BuyNFT } from "./utils/interact.js";
-import { InspectNFT } from "./utils/interact_Annoucement.js";
+import { InspectNFT , MintTimeAndBlocknumber} from "./utils/interact_Annoucement.js";
 import { create } from 'ipfs-http-client';
 
 const ipfs_gateway = process.env.REACT_APP_IPFS_GATEWAY;
@@ -31,6 +31,7 @@ const NFT_query = (props) => {
   const [IsInstallMetaMask,setIsInstallMetaMask] = useState(false);
   const [isConnected, setConnectedStatus] = useState(false);
   const [walletAddress, setWallet] = useState("");//BuyNFTButtonPressed
+  const [mintTimeBlocknumber,setmintTimeBlocknumber]=useState("");//MintTimeAndBlocknumber
   const [BuyNFTButtonPressed, setBuyNFTButtonPressed] = useState(false);
 
   useEffect(async function RefreshMyNFTs_info(){
@@ -72,6 +73,56 @@ const NFT_query = (props) => {
 
   const onNFT_search_Pressed = async () => 
   {
+    const {MintTimestamp_,logs_,MintBlockNumber_}= await MintTimeAndBlocknumber(web3.utils.padLeft(web3.utils.toHex(props.ID), 64));
+    //console.log(web3.utils.padLeft(web3.utils.toHex(props.ID), 64))
+    // console.log("===========================================================");
+    // console.log(MintBlockNumber_);
+    // console.log(MintTimestamp_);
+    // console.log(logs_);
+    // console.log("===========================================================");
+    setmintTimeBlocknumber("登记确认区块高度："+MintBlockNumber_+" 登记确认时间："+ dateFormat(MintTimestamp_*1000));
+
+ 
+function dateFormat (time, format) {
+  const t = new Date(time)
+  // 日期格式
+  format = format || 'Y-m-d h:i:s'
+  let year = t.getFullYear()
+  // 由于 getMonth 返回值会比正常月份小 1
+  let month = t.getMonth() + 1
+  let day = t.getDate()
+  let hours = t.getHours()
+  let minutes = t.getMinutes()
+  let seconds = t.getSeconds()
+
+  const hash = {
+    'y': year,
+    'm': month,
+    'd': day,
+    'h': hours,
+    'i': minutes,
+    's': seconds
+  }
+  // 是否补 0
+  const isAddZero = (o) => {
+    return /M|D|H|I|S/.test(o)
+  }
+  return format.replace(/\w/g, o => {
+    let rt = hash[o.toLocaleLowerCase()]
+    return rt > 10 || !isAddZero(o) ? rt : `0${rt}`
+  })
+}
+
+    function formatDate(now) { 
+      var year=now.getFullYear();  //取得4位数的年份
+      var month=now.getMonth()+1;  //取得日期中的月份，其中0表示1月，11表示12月
+      var date=now.getDate();      //返回日期月份中的天数（1到31）
+      var hour=now.getHours();     //返回日期中的小时数（0到23）
+      var minute=now.getMinutes(); //返回日期中的分钟数（0到59）
+      var second=now.getSeconds(); //返回日期中的秒数（0到59）
+      return year+"-"+month+"-"+date+" "+hour+":"+minute+":"+second; 
+      } 
+
     const { success,SearchResult_,TheSalePrice_,MatedataCID_,TotalNFT_,Owner_} = await InspectNFT(props.ID);
     setSearchResult( SearchResult_ );
     setSalePrice(TheSalePrice_);
@@ -144,10 +195,11 @@ const NFT_query = (props) => {
       </div>
       <h1 id="title">{"版权NFT号："+props.ID}</h1>
       <p id="status" style={{"whiteSpace":"pre"}} >{SearchResult}</p>
+      <p>{mintTimeBlocknumber}</p>
       <div>
         <p> {ResultName&&("名称: "+ResultName)} </p>
         <p> {ResultDescription&&("概述: "+ResultDescription)} </p>
-        <p> { ResultAssetCID && ( <img src={ipfs_gateway+ResultAssetCID} width="500px" />)} </p>
+        <p> {ResultAssetCID && ( <img src={ipfs_gateway+ResultAssetCID} width="500px" />)} </p>
       </div>
     </div>
   );

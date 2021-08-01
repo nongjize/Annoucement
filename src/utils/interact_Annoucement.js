@@ -13,6 +13,37 @@ Contract.setProvider('http://127.0.0.1:8545');
 var contract_ = new Contract(contractABI, contractAddress);            //接口 'http://127.0.0.1:8545'
 var contract= new web3.eth.Contract(contractABI, contractAddress);  //接口 Alckemy
 
+export const MintTimeAndBlocknumber = async(NFT_id) => {
+    try
+    {
+        //console.logs(web3.utils.sha3("Transfer(from,to,tokenId)"));
+        //console.logs("!!!!!!!!!!!!!");
+        const logs= await web3.eth.getPastLogs({
+            fromBlock:0,
+            toBlock:"latest",
+            address: contractAddress,
+           topics: [web3.utils.sha3('Transfer(address,address,uint256)'),"0x0000000000000000000000000000000000000000000000000000000000000000",null,NFT_id]
+           //topics: [web3.utils.sha3('Transfer(address,address,uint256)'),null,null,NFT_id]
+        });
+        const timestamp11= await web3.eth.getBlock(logs[0].blockNumber);
+        
+        //const TotalNFT= await contract.methods.totalSupply().call();
+        return {
+            success: true,  
+            logs_:logs,
+            MintBlockNumber_:logs[0].blockNumber,//blockNumber
+            MintTimestamp_:timestamp11.timestamp,
+            test_:web3.utils.sha3('Transfer(address,address,uint256)')
+        };
+    }catch(error)
+    {
+        return {
+            success: false, 
+            TotalNFT_:"失败: "
+        };
+    }
+}
+
 export const TotalNFTs = async() => {
     try
     {
